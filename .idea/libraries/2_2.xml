@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="2.2">
+    <CLASSES>
+      <root url="file://C:/编程/jars/2.2.0" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://C:/编程/jars/2.2.0" />
+    </SOURCES>
+    <jarDirectory url="file://C:/编程/jars/2.2.0" recursive="false" />
+    <jarDirectory url="file://C:/编程/jars/2.2.0" recursive="false" type="SOURCES" />
+  </library>
+</component>

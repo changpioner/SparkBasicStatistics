@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="BasicStatistics:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/BasicStatistics_jar</output-path>
+    <root id="archive" name="BasicStatistics.jar">
+      <element id="module-output" name="BasicStatistics" />
+      <element id="extracted-dir" path="C:/编程/jars/2.2.0/spark-mllib_2.11-2.2.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="C:/编程/jars/2.2.0/spark-mllib-local_2.11-2.2.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
