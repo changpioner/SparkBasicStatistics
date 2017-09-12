@@ -16,12 +16,26 @@ package features
   如果用R进行线性回归，则对String类型的输入列进行one-hot编码、对数值型的输入列进行double类型转化。
   如果类别列是字符串类型，它将通过StringIndexer转换为double类型。
   如果标签列不存在，则输出中将通过规定的响应变量创造一个标签列。
+  假设我们有一个DataFrame,它的列名是id, country, hour和clicked。
+
+id | country | hour | clicked
+---|---------|------|---------
+ 7 | "US"    | 18   | 1.0
+ 8 | "CA"    | 12   | 0.0
+ 9 | "NZ"    | 15   | 0.0
+  如果我们用clicked ~ country + hour(基于country和hour来预测clicked)来作用于RFormula,将会得到下面的结果。
+
+id | country | hour | clicked | features         | label
+---|---------|------|---------|------------------|-------
+ 7 | "US"    | 18   | 1.0     | [0.0, 0.0, 18.0] | 1.0
+ 8 | "CA"    | 12   | 0.0     | [0.0, 1.0, 12.0] | 0.0
+ 9 | "NZ"    | 15   | 0.0     | [1.0, 0.0, 15.0] | 0.0
   *
   *
   */
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.ml.feature.RFormula
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{DataFrame, SparkSession}
 
 
 
@@ -36,9 +50,17 @@ import org.apache.spark.sql.SparkSession
       SparkSession.builder().appName("test").getOrCreate()
 
      val dataSet = spark.createDataFrame(Seq(
+       (1, "US", 18, 1.0),
+       (2, "B", 12, 0.0),
+       (3, "C", 18, 1.0),
+       (4, "US", 12, 0.0),
+       (5, "US", 18, 1.0),
+       (6, "US", 12, 0.0),
        (7, "US", 18, 1.0),
        (8, "CA", 12, 0.0),
-       (9, "NZ", 15, 0.0)
+       (9, "US", 18, 1.0),
+       (10, "CA", 12, 0.0),
+       (11, "NZ", 15, 0.0)
      )).toDF("id", "country", "hour", "clicked")
 
      dataSet.show()
@@ -46,7 +68,8 @@ import org.apache.spark.sql.SparkSession
       .setFormula("clicked ~ country + hour")
       .setFeaturesCol("features")
       .setLabelCol("label")
-    val  output = formula.fit(dataSet).transform(dataSet)
+    val  output: DataFrame = formula.fit(dataSet).transform(dataSet)
+     output.printSchema()
     output.select("features", "label").show(false)
 
   }
