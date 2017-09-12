@@ -25,17 +25,13 @@ object ChiSqTest {
     else
       SparkSession.builder().appName("test").getOrCreate()
     import spark.implicits._
-    val activities: Array[Double] = Array(1.0,0.0,1.0,0.0,1.0,0.0,1.0,0.0,0.0,1.0,0.0,1.0)
+
+    val activities: Array[Double] = Array(1,0,1,0,1,0,1,0,0,1,0,1)
     val matrices = Matrices.dense(2,6,activities)
     val chiSq_Result = stat.Statistics.chiSqTest(matrices)
     println(chiSq_Result)
 
-    val data1 = Seq(
-      (1.0, Vectors.dense(21.0,6.0)),
-      (1.0, Vectors.dense(11.0,7.0)),
-      (0.0, Vectors.dense(23.0,29.0))
 
-    )
     val data = Seq(
       (0.0, Vectors.dense(0.5, 10.0)),
       (0.0, Vectors.dense(0.6, 20.0)),
