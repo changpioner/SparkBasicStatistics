@@ -16,7 +16,7 @@ import org.apache.spark.sql.SparkSession
     2、percentile：类似于上一种方法，但是选取一小部分特征而不是固定(num)个特征；
     3、fpr:选择了所有p值低于阈值的特征，这样就可以控制false positive rate来进行特征选择；
     4、fdr: 使用Benjamini-Hochberg 来选择所有错误发现率低于阈值的特征。
-    5、fwe: 选择所有p值低于阈值的特性。阈值按1 / numFeatures缩放，从而控制了选择的家庭错误率。
+    5、fwe: 选择所有p值低于阈值的特性。阈值按1 / numFeatures缩放，从而控制了family-wise error rate。
   默认情况下特征选择方法是numTopFeatures(50)，可以根据setSelectorType()选择特征选取方法。
   *
   */
@@ -44,10 +44,10 @@ object ChiSqSelectorDemo {
     val df = spark.createDataset(data).toDF("id", "features", "clicked")
 
     val selector = new ChiSqSelector()
-      .setSelectorType("fdr")
-      .setFdr(0.7)
-      .setPercentile(0.5)
-      .setNumTopFeatures(1)
+      .setSelectorType("numTopFeatures")
+      //.setFdr(0.69)
+      //.setPercentile(0.5)
+      .setNumTopFeatures(2)
       .setFeaturesCol("features")
       .setLabelCol("clicked")
       .setOutputCol("selectedFeatures")

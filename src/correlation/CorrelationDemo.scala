@@ -35,7 +35,7 @@ object CorrelationDemo {
       Vectors.dense(2.0,7.0,3.0,1.0)
     )
 
-    val df = data.map(Tuple1.apply).toDF("features")
+    val df = data.map(Tuple1(_)).toDF("features")
     df.show(false)
 
     val Row(coeff1: Matrix) = Correlation.corr(df, "features","pearson").head
@@ -59,7 +59,7 @@ object CorrelationDemo {
     val data2 :Array[Double]= Array(7,0,27,50,28,29,20,12,6,17)
     val data3 = Array(4.0,2.0,6.0,3.0)
     val data4 = Array(5.0,2.0,4.0,1.0)
-    val distDataArr = Array(data1,data2,data3,data4).map(x=>spark.sparkContext.parallelize(x))
+    val distDataArr = Array(data1,data2,data3,data4).map(spark.sparkContext.parallelize(_))
     val correlation01 = Statistics.corr(distDataArr(0), distDataArr(1), "spearman")
     //val correlation02 = Statistics.corr(distDataArr(0),distDataArr(2), "pearson")
     //val correlation03 = Statistics.corr(distDataArr(0),distDataArr(3), "pearson")
