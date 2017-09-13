@@ -65,7 +65,7 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 
      dataSet.show()
     val formula = new RFormula()
-      .setFormula("clicked ~ country + hour")
+      .setFormula("clicked ~ .")
       .setFeaturesCol("features")
       .setLabelCol("label")
     val  output: DataFrame = formula.fit(dataSet).transform(dataSet)

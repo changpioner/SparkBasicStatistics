@@ -10,7 +10,7 @@ import org.apache.spark.mllib.stat
 import org.apache.spark.mllib.stat.Statistics
 import org.apache.spark.mllib.stat.test.ChiSqTestResult
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{DataFrame, SparkSession}
 
 /**
   * Created by Namhwik on 2017/9/7.
@@ -26,12 +26,22 @@ object ChiSqTest {
       SparkSession.builder().appName("test").getOrCreate()
     import spark.implicits._
 
+    //独立性检验
+
+    /*
+      矩阵：
+    * +---+-------------------+
+    * | 1 | 1 | 1 | 1 | 0 | 0 |
+    * | 0 | 0 | 0 | 0 | 1 | 1 |
+    * +---+-------------------+
+    * */
     val activities: Array[Double] = Array(1,0,1,0,1,0,1,0,0,1,0,1)
     val matrices = Matrices.dense(2,6,activities)
     val chiSq_Result = stat.Statistics.chiSqTest(matrices)
     println(chiSq_Result)
 
 
+    //ML 特征选择
     val data = Seq(
       (0.0, Vectors.dense(0.5, 10.0)),
       (0.0, Vectors.dense(0.6, 20.0)),
@@ -43,10 +53,15 @@ object ChiSqTest {
 
     val df = data.toDF("label", "features")
     df.show()
-    val chiSq_Result1 = ChiSquareTest.test(df,"features","label")
+    val chiSq_Result1: DataFrame = ChiSquareTest.test(df,"features","label")
     chiSq_Result1.show(false)
 
 
+
+
+
+
+    //MLLIB 特征选择
     val obs: RDD[LabeledPoint] =
       spark.sparkContext.parallelize(
         Seq(
@@ -64,15 +79,18 @@ object ChiSqTest {
     featureTestResults.zipWithIndex.foreach { case (k, v) =>
       println("Column " + (v + 1).toString + ":")
       println(k)
-    }  // summary of the test
-    println("**************goodness of fit test***********")
-    val vec = mllib.linalg.Vectors.dense(1, 2, 2, 4, 3)
+    }
 
-    // compute the goodness of fit. If a second vector to test against is not supplied
+
+
+
+
+    println("**************goodness of fit test***********")
+    val vec = mllib.linalg.Vectors.dense(52, 60, 58, 42, 48,40)
+    val expectedVec = mllib.linalg.Vectors.dense(50, 50, 50, 50, 50, 50)
+    //如果不指定
     // as a parameter, the test runs against a uniform distribution.
-    val goodnessOfFitTestResult = Statistics.chiSqTest(vec)
-    // summary of the test including the p-value, degrees of freedom, test statistic, the method
-    // used, and the null hypothesis.
+    val goodnessOfFitTestResult = Statistics.chiSqTest(vec,expectedVec)
     println(s"$goodnessOfFitTestResult\n")
   }
 }

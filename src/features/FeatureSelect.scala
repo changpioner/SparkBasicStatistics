@@ -51,13 +51,13 @@ object FeatureSelect {
     else
       SparkSession.builder().appName("test").getOrCreate()
 
-    example1(spark)
+    example2(spark)
 
   }
   def example1(spark: SparkSession): Unit ={
 
     val data = Arrays.asList(
-      Row(Vectors.sparse(3, Seq((0, -2.0), (1, 2.3)))),
+      Row(Vectors.sparse(3, Seq((0, -2.0), (1, 2.3),(2, 3.3)))),
       Row(Vectors.dense(-2.0, 2.3, 0.0))
     )
     val field  = StructField("fd1",StringType,nullable = true)
@@ -69,7 +69,7 @@ object FeatureSelect {
 
     val slicer = new VectorSlicer().setInputCol("userFeatures").setOutputCol("features")
 
-    slicer.setIndices(Array(1)).setNames(Array("f3"))
+    slicer.setIndices(Array(1)).setNames(Array("f3"))//.setIndices(Array(1)).setNames(Array("f3"))
     // or slicer.setIndices(Array(1, 2)), or slicer.setNames(Array("f2", "f3"))
 
     val output = slicer.transform(dataset)

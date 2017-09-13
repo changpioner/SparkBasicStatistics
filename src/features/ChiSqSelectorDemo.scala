@@ -3,7 +3,6 @@ package features
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.ml.feature.ChiSqSelector
 import org.apache.spark.ml.linalg.Vectors
-import org.apache.spark.ml.param.DoubleParam
 import org.apache.spark.sql.SparkSession
 
 /**
@@ -33,26 +32,28 @@ object ChiSqSelectorDemo {
       SparkSession.builder().appName("test").getOrCreate()
     import spark.implicits._
     val data = Seq(
-      (0, Vectors.dense(0.5, 10.0),0.0),
-      (1, Vectors.dense(0.6, 20.0),0.0),
-      (2, Vectors.dense(1.5, 30.0),1.0),
-      (3, Vectors.dense(0.4, 30.0),0.0),
-      (4, Vectors.dense(0.45, 40.0),0.0),
-      (5, Vectors.dense(1.6, 40.0),1.0)
+      (0, Vectors.dense(0.5, 10.0, 10.0),0.0),
+      (1, Vectors.dense(0.6, 20.0, 20.0),0.0),
+      (2, Vectors.dense(1.5, 30.0, 30.0),1.0),
+      (3, Vectors.dense(0.4, 30.0, 30.0),0.0),
+      (4, Vectors.dense(0.45, 40.5, 40.0),0.0),
+      (5, Vectors.dense(1.6, 40.0, 40.0),1.0)
 
     )
 
     val df = spark.createDataset(data).toDF("id", "features", "clicked")
 
     val selector = new ChiSqSelector()
-      .setSelectorType("percentile")
-      //.setNumTopFeatures(1)
+      .setSelectorType("fdr")
+      .setFdr(0.7)
+      .setPercentile(0.5)
+      .setNumTopFeatures(1)
       .setFeaturesCol("features")
       .setLabelCol("clicked")
       .setOutputCol("selectedFeatures")
     val selectorModel = selector.fit(df)
     //selectorModel.percentile= DoubleParam(2.1)
-    val param = new DoubleParam("","","")
+    //val param = new DoubleParam("","","")
     val result = selectorModel.transform(df)
 
     println(s"ChiSqSelector output with top ${selector.getNumTopFeatures} features selected")
